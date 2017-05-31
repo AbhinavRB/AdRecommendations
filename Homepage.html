@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ads!!</title>
+	<style type="text/css">
+		#clientSelector {
+			width: 75vw;
+			height: 50vh;
+		}
+		#agencyDiv {
+			width: 20vw;
+			height: 20vw;
+			background-color: rgba(8, 95, 107, 0.7);
+			position: absolute;
+			top: 30%;
+			left: 20%;
+			border-radius: 10vw;
+			text-align: center; 
+			cursor: pointer;
+		}
+		#agencyDiv:hover {
+			background-color: #085f6b;
+		}
+		#advertiserDiv {
+			width: 20vw;
+			height: 20vw;
+			background-color: rgba(8, 95, 107, 0.7);
+			position: absolute;
+			top: 30%;
+			left: 45%;
+			border-radius: 10vw;
+			text-align: center;
+			cursor: pointer;
+		}
+		#advertiserDiv:hover {
+			background-color: #085f6b;
+		}
+		#titleSpan {
+			font-size: 70px;
+			color: white;
+		}
+		#iAmASpan {
+			position: absolute;
+			left: 37%;
+			top: 20%;
+			font-size: 45px;
+			color: white;
+		}
+		#inSpan1 {
+			position: absolute;
+			top: 40%;
+			left: 20%;
+			color: white;
+			font-size: 30px;
+		}
+		#inSpan2 {
+			position: absolute;
+			top: 40%;
+			left: 25%;
+			font-size: 30px;
+			color: white;
+		}
+	</style>
+</head>
+<body style="background-image: url('ImageData\\background-wallpaper-in-hd-7.jpg');">
+	<span id="titleSpan">Welcome to Ad Recommendations!!</span>
+
+	<div id="clientSelector">
+		<span id="iAmASpan">I am a</span> 
+		<div id="agencyDiv" onclick="loadAgency()">
+			<span id="inSpan1">News agency</span>
+		</div>
+		<div id="advertiserDiv" onclick="loadAdvertiser()">
+			<span id="inSpan2">Advertiser</span>
+		</div>
+	</div> 
+	<script type="text/javascript">
+		function loadAgency() {
+			window.open("Agency.html", "_self", false)
+		}
+		function loadAdvertiser() {
+			window.open("Advertiser.html", "_self", false)
+		}
+	</script>
+</body>
+</html>

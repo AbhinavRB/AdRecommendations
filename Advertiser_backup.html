@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Advertiser Page</title>
+	<style type="text/css">
+		#drop-zone {
+		    /*Sort of important*/
+		    width: 300px;
+		    /*Sort of important*/
+		    height: 200px;
+		    position:absolute;
+		    left:20%;
+		    top:100px;
+		    margin-left:-150px;
+		    border: 2px dashed rgba(0,0,0,.3);
+		    border-radius: 20px;
+		    font-family: Arial;
+		    text-align: center;
+		    position: relative;
+		    line-height: 180px;
+		    font-size: 20px;
+		    color: rgba(0,0,0,.3);
+		}
+
+	    #drop-zone input {
+	        /*Important*/
+	        position: absolute;
+	        /*Important*/
+	        cursor: pointer;
+	        left: 0px;
+	        top: 0px;
+	        /*Important This is only comment out for demonstration purposes.
+	        opacity:0; */
+	    }
+
+	    /*Important*/
+	    #drop-zone.mouse-over {
+	        border: 2px dashed rgba(0,0,0,.5);
+	        color: rgba(0,0,0,.5);
+	    }
+
+
+		/*If you dont want the button*/
+		#clickHere {
+		    position: absolute;
+		    cursor: pointer;
+		    left: 50%;
+		    top: 50%;
+		    margin-left: -50px;
+		    margin-top: 20px;
+		    line-height: 26px;
+		    color: white;
+		    font-size: 12px;
+		    width: 100px;
+		    height: 26px;
+		    border-radius: 4px;
+		    background-color: #3b85c3;
+
+		}
+
+	    #clickHere:hover {
+	        background-color: #4499DD;
+
+	    }
+
+	    .optionDiv1 {
+			position: absolute;
+			left: 40%;
+			top: 18%;
+			width: 20vw;
+			height: 20vw;
+			background-color: #183d3a;
+			border-radius: 20px;
+			text-align: center;
+			padding: 15px;
+		}
+		.optionDiv2 {
+			position: absolute;
+			left: 66%;
+			top: 18%;
+			width: 20vw;
+			height: 20vw;
+			background-color: #183d3a;
+			border-radius: 20px;
+			text-align: center;
+			padding: 15px;
+		}
+		.optionDiv3 {
+			position: absolute;
+			left: 65%;
+			top: 20%;
+			width: 20vw;
+			height: 20vw;
+			background-color: #183d3a;
+			border-radius: 20px;
+			text-align: center;
+			padding: 15px;
+		}
+		.textSpan {
+			position: relative;
+			top: 30%;
+		}
+		.goodText {
+			font-size: 20px;
+			color: white;
+		}
+		.ipBox {
+			position: relative;
+			top: 38%;
+			border-radius: 5px;
+			border-color: #000000;
+			background-color: #000000;
+			color: white;
+		}
+		#labelBox {
+			position: relative;
+			top: 30%;
+			border-radius: 5px;
+			border-color: #000000;
+			background-color: #000000;
+			color: white;
+		}
+		input[type="date"]::-webkit-calendar-picker-indicator {
+			background-color: #000000;
+			color: white;
+		}
+		input[type="date"]::-webkit-inner-spin-button {
+			display: none;
+		}
+		body {
+			background-color: #2f9171;
+		}
+		#sendButton {
+			border: none;
+			border-radius: 2px;
+			background-color: white;
+			color: #183d3a;
+			font-weight: bold;
+			width: 200px;
+			height: 40px;
+			position: absolute;
+			left: 40%;
+			top: 70%;
+		}
+		#responseDiv {
+			display: none;
+			width: 30vw;
+			height: 8vw;
+			background-color: #264f4e;
+			position: absolute;
+			top: 70%;
+			left: 50%;
+			border-radius: 15px;
+			padding: 12px;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+	<font size="40px" color="white">Advertiser Portal</font>
+	<div id="drop-zone">
+	    Drop files here...
+	    <div id="clickHere">
+	        or click here..
+	        <input type="file" name="file[]" id="file" multiple style="opacity: 0;" />
+	    </div>
+	</div>
+
+
+	<div class="optionDiv1">
+		<span class="textSpan goodText">Ad labels: </span><input class="ipBox" type="text" name="labelBox" id="labelBox">
+	</div>
+	<div class="optionDiv2">
+		<span class="textSpan goodText">Preferred date range: </span><input class="ipBox" type="date" name="startDate" id="startDate" min="2017-01-01" max="2017-01-31"> <span class="textSpan goodText">to</span> <input class="ipBox" type="date" name="endDate" id="endDate" max="2017-01-31">
+	</div>
+
+	<div id="responseDiv"></div>
+
+	<button id="sendButton">Get Recommendation!</button>
+
+
+	<script type="text/javascript">
+		$(function () {
+		    var dropZoneId = "drop-zone";
+		    var buttonId = "clickHere";
+		    var mouseOverClass = "mouse-over";
+
+		    var dropZone = $("#" + dropZoneId);
+		    var ooleft = dropZone.offset().left;
+		    var ooright = dropZone.outerWidth() + ooleft;
+		    var ootop = dropZone.offset().top;
+		    var oobottom = dropZone.outerHeight() + ootop;
+		    var inputFile = dropZone.find("input");
+		    document.getElementById(dropZoneId).addEventListener("dragover", function (e) {
+		        e.preventDefault();
+		        e.stopPropagation();
+		        dropZone.addClass(mouseOverClass);
+		        var x = e.pageX;
+		        var y = e.pageY;
+
+		        if (!(x < ooleft || x > ooright || y < ootop || y > oobottom)) {
+		            inputFile.offset({ top: y - 15, left: x - 100 });
+		        } else {
+		            inputFile.offset({ top: -400, left: -400 });
+		        }
+
+		    }, true);
+
+		    if (buttonId != "") {
+		        var clickZone = $("#" + buttonId);
+
+		        var oleft = clickZone.offset().left;
+		        var oright = clickZone.outerWidth() + oleft;
+		        var otop = clickZone.offset().top;
+		        var obottom = clickZone.outerHeight() + otop;
+
+		        $("#" + buttonId).mousemove(function (e) {
+		            var x = e.pageX;
+		            var y = e.pageY;
+		            if (!(x < oleft || x > oright || y < otop || y > obottom)) {
+		                inputFile.offset({ top: y - 15, left: x - 160 });
+		            } else {
+		                inputFile.offset({ top: -400, left: -400 });
+		            }
+		        });
+		    }
+
+		    document.getElementById(dropZoneId).addEventListener("drop", function (e) {
+		        $("#" + dropZoneId).removeClass(mouseOverClass);
+		    }, true);
+
+		})
+
+		function handleFileSelect(evt) {
+		    var files = evt.target.files; // FileList object
+		    var labels = labelBox.value;
+		    var startdate = startDate.value;
+		    var enddate = endDate.value;
+
+		    var file_data = $('#file').prop('files')[0];   
+		    var form_data = new FormData();
+		    form_data.append('file', file_data);
+		    form_data.append('labels', labels);
+		    form_data.append('startDate', startdate);
+		    form_data.append('endDate', enddate);
+		    alert("Processing...");                             
+		    $.ajax({
+                url: 'advertiser_backend.php', // point to server-side PHP script 
+                dataType: 'text',  // what to expect back from the PHP script, if anything
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: form_data,                         
+                type: 'post',
+                success: function(php_script_response){
+                    // alert(php_script_response); 
+                    var resText = php_script_response.split("\n");
+                    if (resText[0] == -1) {
+                    	responseDiv.innerHTML = "We could not determine the ideal setting for this ad!";
+                    }
+                    else {
+                    	if (resText[0] == 0) {
+                    		responseDiv.innerHTML = "We could not set your ad within the specified time frame!<br>";
+                    	}
+                    	else if (resText[0] == 1) {
+                    		responseDiv.innerHTML = "We have found a setting for your ad!"
+                    	}
+                    	 responseDiv.innerHTML = "Recommended page number: " + resText[1] + "<br>Recommended date: " + resText[2] + "<br>Commonly under page heading: " + resText[3] + "<br>Recommended aspect ratio: " + resText[4];
+                    }
+                   
+                }
+		     });
+		}
+
+		document.getElementById('sendButton').addEventListener('click', handleFileSelect, false);
+	</script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Advertiser Page</title>
+	<link rel="stylesheet" type="text/css" href="advertiserCSS.css">
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+	<font size="40px" color="white">Advertiser Portal</font>
+	<div id="drop-zone">
+	    Drop image here
+	    <div id="clickHere">
+	        or click here..
+	        <input type="file" name="file[]" id="file" multiple style="opacity: 0;" />
+	    </div>
+	</div>
+	<div class="optionDiv1" id="optDiv1">
+		<span class="textSpan goodText">Ad labels: </span><br><br><input class="ipBox" type="text" name="labelBox" id="labelBox">
+	</div>
+	<div class="optionDiv2" id="optDiv2">
+		<span class="textSpan goodText">Preferred date range: </span><input class="ipBox" type="date" name="startDate" id="startDate" min="2017-01-01" max="2017-01-31"> <span class="textSpan goodText">to</span> <input class="ipBox" type="date" name="endDate" id="endDate" min="2017-01-01" max="2017-01-31">
+		<span class="goodText" style="color: #ddccdd;">Current support: January</span>
+	</div>
+	<div id="layoutDiv"></div>
+	<div id="recommendationDiv">
+		<img src="ImageData/loading.gif" class="loadImage">
+		<span class="modelText">Loading</span>
+	</div>
+	<div id="responseDiv"></div>
+
+	<button id="sendButton">Get Recommendation!</button>
+
+
+	<script type="text/javascript">
+		$(function () {
+		    var dropZoneId = "drop-zone";
+		    var buttonId = "clickHere";
+		    var mouseOverClass = "mouse-over";
+
+		    var dropZone = $("#" + dropZoneId);
+		    var ooleft = dropZone.offset().left;
+		    var ooright = dropZone.outerWidth() + ooleft;
+		    var ootop = dropZone.offset().top;
+		    var oobottom = dropZone.outerHeight() + ootop;
+		    var inputFile = dropZone.find("input");
+		    document.getElementById(dropZoneId).addEventListener("dragover", function (e) {
+		        e.preventDefault();
+		        e.stopPropagation();
+		        dropZone.addClass(mouseOverClass);
+		        var x = e.pageX;
+		        var y = e.pageY;
+
+		        if (!(x < ooleft || x > ooright || y < ootop || y > oobottom)) {
+		            inputFile.offset({ top: y - 15, left: x - 100 });
+		        } else {
+		            inputFile.offset({ top: -400, left: -400 });
+		        }
+
+		    }, true);
+
+		    if (buttonId != "") {
+		        var clickZone = $("#" + buttonId);
+
+		        var oleft = clickZone.offset().left;
+		        var oright = clickZone.outerWidth() + oleft;
+		        var otop = clickZone.offset().top;
+		        var obottom = clickZone.outerHeight() + otop;
+
+		        $("#" + buttonId).mousemove(function (e) {
+		            var x = e.pageX;
+		            var y = e.pageY;
+		            if (!(x < oleft || x > oright || y < otop || y > obottom)) {
+		                inputFile.offset({ top: y - 15, left: x - 160 });
+		            } else {
+		                inputFile.offset({ top: -400, left: -400 });
+		            }
+		        });
+		    }
+
+		    document.getElementById(dropZoneId).addEventListener("drop", function (e) {
+		        $("#" + dropZoneId).removeClass(mouseOverClass);
+		    }, true);
+
+		})
+
+		document.getElementById("file").addEventListener('change', function (evt) {
+			var previewImg = document.createElement('img');
+			previewImg.src = URL.createObjectURL(event.target.files[0]);
+			previewImg.style.width = "98%";
+			previewImg.style.height = "98%";
+			previewImg.style.position = "absolute";
+			previewImg.style.top = "1%"
+			previewImg.style.left = "1%"
+			previewImg.style.borderRadius = "15px";
+			console.log(previewImg.src);
+			document.getElementById('drop-zone').appendChild(previewImg);
+		});
+
+		function handleFileSelect(evt) {
+
+			document.getElementById('drop-zone').style.display = "none";
+        	document.getElementById('optDiv1').style.display = "none";
+        	document.getElementById('optDiv2').style.display = "none";
+			document.getElementById('sendButton').style.display = "none";
+			
+			recommendationDiv.style.display = "inline";
+
+		    var files = evt.target.files; // FileList object
+		    var labels = labelBox.value;
+		    var startdate = startDate.value;
+		    var enddate = endDate.value;
+
+		    var file_data = $('#file').prop('files')[0];   
+		    var form_data = new FormData();
+		    form_data.append('file', file_data);
+		    form_data.append('labels', labels);
+		    form_data.append('startDate', startdate);
+		    form_data.append('endDate', enddate);
+		    // alert("Processing...");                             
+		    $.ajax({
+                url: 'advertiser_backend.php', // point to server-side PHP script 
+                dataType: 'text',  // what to expect back from the PHP script, if anything
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: form_data,                         
+                type: 'post',
+                success: function(php_script_response){
+
+                    // alert(php_script_response); 
+                    var resText = php_script_response.split("\n");
+                    // alert(resText);
+
+                    // pageNumSpan.innerText = resText[0].split(":")[1];
+                    // pageHeadingSpan.innerText = resText[7];
+                    // for (var i = 0; i < resText[6].length; i++) {
+                    // 	topLabelsSpan.innerHTML += resText[6][i] + "\n";
+                    // }
+
+                    responseDiv.style.display = "inline";
+					layoutDiv.style.display = "inline";
+
+                    var totalPagesList = Array(); 
+
+                    for (var i = 0; i < 5; i++) {
+                    	totalPagesList[i] = resText[i].split(":")[4];
+                    }
+
+                    layoutDiv.innerHTML = "<font size=6 color='#4fe1ff'>Page Template</font><br><div id='pageLayout' class='template'><div id='adLayout' class='arTemplate'></div><span id='pageNumSpan'></span><span id='pageHeadingSpan'></span></div>";
+                    arNum = Number(resText[8]);
+                    adLayout.innerHTML = "<font size=2 color='white'>Aspect Ratio: " + String(arNum) + "</font>";
+                    console.log(arNum);
+                    if (arNum < 2) {
+                    	adLayout.style.height = "40%";
+                    	adLayout.style.width = String(1.7 * arNum * Number(adLayout.style.height.slice(0, 2))) + "%";
+                    }
+                    else {
+                    	adLayout.style.width = "70%";
+                    	adLayout.style.height = String(1.7 * Number(adLayout.style.height.slice(0, 2)) / arNum) + "%";
+                    }
+                    pageNumSpan.innerText = resText[0].split(":")[1];
+                    pageHeadingSpan.innerText = resText[7];
+
+                	pageLayout.style.display = "inline";
+
+                    var xAxis = Array();
+                    var yAxis = Array();
+                    var qual = Array();
+                    var colorArray = ['rgba(0, 153, 204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)'];
+                    var max = 0, iMax = 0;
+                    for (var i = 0; i < 5; i++) {
+                    	xAxis[i] = resText[i].split(":", 2).join(": ");
+                    	yAxis[i] = Number(resText[i].split(":")[2]);
+                    	qual[i] = (Number(resText[i].split(":")[3])*1000).toFixed(3);
+                    	if (qual[i] > max) {
+                    		max = qual[i];
+                    		iMax = i;
+                    	}
+                    }
+                    qual[0] += " Most hits";
+                    if (iMax == 0) {
+                    	colorArray[iMax] = 'rgba(111, 99, 121,1)';
+                    }
+                    else {
+                    	colorArray[iMax] = 'rgba(222,45,38,0.8)';
+                    }
+                    qual[iMax] += " Highest quality hits";
+
+
+
+                    var trace1 = {
+					  x: xAxis,
+					  y: yAxis,
+					  text: qual,
+					  marker:{
+    					color: colorArray
+  					  },
+					  type: 'bar'
+					};
+
+					var data = [trace1];
+
+					var layout = {
+					  title: 'Results'
+					};
+
+					Plotly.newPlot('responseDiv', data, layout);
+
+					recommendationDiv.innerHTML = "<span id='rcHeading'>Recommendation</span><br><br><font color='white'>Based on quantity score, </font><br><span id='hitRC'></span><br><br><font color='white'>Based on quality of score, </font><br><span id='matchRC'></span><br><br><br><font color='white'>Labels with most matches: </font><br><span id='wordCloudSpan'></span>";
+
+                    hitRC.innerText = "Date: " + String(resText[0].split(":")[0]) + ", Page: " + String(resText[0].split(":")[1]) + "/" + String(totalPagesList[0]);
+
+                    matchRC.innerText = "Date: " + String(resText[iMax].split(":")[0]) + ", Page: " + String(resText[iMax].split(":")[1]) + "/" + String(totalPagesList[iMax]);
+
+                    var labelsList = resText[6].slice(1, -1).split(", ");
+                    console.log(labelsList);
+                    var wcColor;
+
+                    for (var i = 0; i < labelsList.length; i++) {
+                    	if (i % 2 == 0) {
+                			wCColor = "white";
+                		}
+                		else {
+                			wCColor = "#c6c6c6";
+                		}
+                    	wordCloudSpan.innerHTML += "<b><font color='" + String(wCColor) + "'>" + labelsList[i].slice(labelsList[i].indexOf("'")+1, -1) + "</font><b> ";
+                    }
+                }
+		     });
+		}
+
+		document.getElementById('sendButton').addEventListener('click', handleFileSelect, false);
+	</script>
+</body>
+</html>

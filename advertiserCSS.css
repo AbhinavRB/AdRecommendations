@@ -1,0 +1,255 @@
+#drop-zone {
+    /*Sort of important*/
+    width: 20vw;
+    /*Sort of important*/
+    height: 20vw;
+    position:absolute;
+    left: 20%;
+    top: 20%;
+    margin-left:-150px;
+    border: 2px dashed #bac9cd;
+    border-radius: 20px;
+    font-family: Arial;
+    text-align: center;
+    /*position: relative;*/
+    line-height: 180px;
+    font-size: 20px;
+    color: #bac9cd;
+}
+
+#drop-zone input {
+    /*Important*/
+    position: absolute;
+    /*Important*/
+    cursor: pointer;
+    left: 0px;
+    top: 0px;
+    /*Important This is only comment out for demonstration purposes.
+    opacity:0; */
+}
+
+/*Important*/
+#drop-zone.mouse-over {
+    border: 2px dashed rgba(0,,0,.5);
+    color: rgba(0,0,0,.5);
+}
+
+
+/*If you dont want the button*/
+#clickHere {
+    position: absolute;
+    cursor: pointer;
+    left: 50%;
+    top: 50%;
+    margin-left: -50px;
+    margin-top: 20px;
+    line-height: 26px;
+    color: white;
+    font-size: 12px;
+    width: 100px;
+    height: 26px;
+    border-radius: 4px;
+    background-color: #3b85c3;
+
+}
+
+#clickHere:hover {
+    background-color: #4499DD;
+
+}
+
+.optionDiv1 {
+	position: absolute;
+	left: 40%;
+	top: 18%;
+	width: 20vw;
+	height: 20vw;
+	background-color: #085f6b;
+	border-radius: 20px;
+	text-align: center;
+	padding: 15px;
+}
+.optionDiv2 {
+	position: absolute;
+	left: 66%;
+	top: 18%;
+	width: 20vw;
+	height: 20vw;
+	background-color: #085f6b;
+	border-radius: 20px;
+	text-align: center;
+	padding: 15px;
+}
+.optionDiv3 {
+	position: absolute;
+	left: 65%;
+	top: 20%;
+	width: 20vw;
+	height: 20vw;
+	background-color: #085f6b;
+	border-radius: 20px;
+	text-align: center;
+	padding: 15px;
+}
+.textSpan {
+	position: relative;
+	top: 30%;
+}
+.goodText {
+	font-size: 20px;
+	color: white;
+}
+.ipBox {
+	position: relative;
+	top: 38%;
+	border-radius: 5px;
+	border-color: #000000;
+	background-color: #000000;
+	color: white;
+}
+#labelBox {
+	position: relative;
+	top: 30%;
+	border-radius: 5px;
+	border-color: #000000;
+	background-color: #000000;
+	color: white;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+	background-color: #000000;
+	color: white;
+}
+input[type="date"]::-webkit-inner-spin-button {
+	display: none;
+}
+body {
+	background-image: url("ImageData\\background-wallpaper-in-hd-7.jpg");
+}
+#sendButton {
+	border: none;
+	border-radius: 2px;
+	background-color: white;
+	color: #085f6b;
+	font-weight: bold;
+	width: 200px;
+	height: 40px;
+	position: absolute;
+	left: 40%;
+	top: 70%;
+}
+#responseDiv {
+	display: none;
+	width: 30vw;
+	height: 30vw;
+	background-color: #264f4e;
+	position: absolute;
+	top: 20%;
+	left: 65%;
+	border-radius: 15px;
+	padding: 12px;
+	text-align: center;
+}
+
+#recommendationDiv {
+	display: none;
+	width: 25vw;
+	height: 30vw;
+	background-color: #264f4e;
+	position: absolute;
+	top: 20%;
+	left: 35%;
+	border-radius: 15px;
+	padding: 12px;
+	text-align: center;
+	word-wrap: break-word;
+}
+
+#layoutDiv {
+	display: none;
+	width: 25vw;
+	height: 30vw;
+	background-color: #264f4e;
+	position: absolute;
+	top: 20%;
+	left: 5%;
+	border-radius: 15px;
+	padding: 7px;
+	text-align: center;
+}
+
+.loadImage {
+	display: block;
+	margin: auto;
+	width: 20%;
+	margin-top: 7%;
+}
+
+.template {
+	display: none;
+	width: 65%;
+	height: 70%;
+	background-color: white;
+	position: absolute;
+	top: 12%;
+	left: 15%;
+	border-radius: 7px;
+	padding: 12px;
+}
+
+@keyframes pulse {
+	from {background-color: #666666;}
+	to {background-color: #3e798e;}
+}
+
+.arTemplate {
+	background-color: #666666;
+	position: absolute;
+	border-radius: 3px;
+	padding: 12px;
+	animation: pulse 1s linear infinite alternate;
+	text-align: center;
+	word-wrap: break-word;
+	padding-top: 30%;
+	margin-top: 20%;
+}
+
+.modelText {
+	color: white;
+	position: absolute;
+	left: 30%;
+	top: 50%;
+	font-size: 30px;
+}
+
+#pageNumSpan {
+	position: absolute;
+	bottom: 5%;
+	right: 5%;
+}
+
+#pageHeadingSpan {
+	font-size: 30px;
+	position: absolute;
+	left: 5%;
+	text-decoration: underline;
+}
+
+#rcHeading {
+	color: #4fe1ff;
+	font-size: 30px;
+}
+
+#hitRC {
+	color: white;
+	font-size: 21px;
+}
+
+#matchRC {
+	color: white;
+	font-size: 21px;
+}
+
+#wordCloudSpan {
+	font-size: 21px;
+}
+

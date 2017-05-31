@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Agency Page</title>
+	<link rel="stylesheet" type="text/css" href="agencyCSS.css">
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+	<font size="40px" color="white">News Agency Portal</font>
+	<div>
+		<div id="optDiv1" class="optionDiv1">
+			<span class="textSpan goodText"> Enter preferred page number: </span><input class="ipBox" type="text" name="pageNo" id="pageNo">
+		</div>
+		<div id="optDiv2" class="optionDiv2">
+			<span class="textSpan goodText"> Enter max pages: </span><input class="ipBox" type="text" name="maxPages" id="maxPages">
+		</div>
+		<div id="optDiv3" class="optionDiv3">
+			<span class="textSpan goodText"> Enter advertisement date: </span><input class="ipBox" type="date" name="adDate" id="adDate" min="2017-01-01" max="2017-01-31">
+            <span class="textSpan2 goodText" style="color: #ddccdd;">Current support: January</span>
+		</div>
+	</div>
+	
+	
+	<button id="sendButton" onclick="sendToServer()">Get Recommendation!</button>
+	<div id="responseDiv1">
+		<img src="ImageData/loading.gif" class="loadImage">
+		<span class="modelText">Loading</span>
+	</div>
+	<div id="responseDiv2"></div>
+	<div id="responseDiv3"></div>
+	<div id="responseDiv4"></div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+	<script type="text/javascript">
+
+		function makeGraph(titleText, xAxis, yAxis, qual, colorArray, divID) {
+	        var trace1 = {
+			  x: xAxis,
+			  y: yAxis,
+			  text: qual,
+			  marker:{
+				color: colorArray
+				  },
+			  type: 'bar'
+			};
+
+			var data = [trace1];
+
+			var layout = {
+			  title: titleText
+			};
+
+			Plotly.newPlot(divID, data, layout);
+		}
+
+		function sendToServer() {
+
+			document.getElementById('optDiv3').style.display = "none";
+        	document.getElementById('optDiv1').style.display = "none";
+        	document.getElementById('optDiv2').style.display = "none";
+			document.getElementById('sendButton').style.display = "none";
+			responseDiv1.style.display = "inline";
+            responseDiv1.style.transition = "display 2s linear";
+            responseDiv2.style.display = "inline";
+            responseDiv2.style.transition = "display 2s linear";
+            responseDiv3.style.display = "inline";
+            responseDiv3.style.transition = "display 2s linear";
+            responseDiv4.style.display = "inline";
+            responseDiv4.style.transition = "display 2s linear";
+
+			var pageno = pageNo.value;
+			var maxpages = maxPages.value;
+			var addate = adDate.value;
+
+		    var form_data = new FormData();
+		    form_data.append('pageno', pageno);
+		    form_data.append('maxpages', maxpages);
+		    form_data.append('addate', addate);
+		    // alert("Processing...");                             
+		    $.ajax({
+                url: 'agency_backend.php', // point to server-side PHP script 
+                dataType: 'text',  // what to expect back from the PHP script, if anything
+                cache: false,
+                contentType: false,
+                processData: false,
+                data: form_data,                         
+                type: 'post',
+                success: function(php_script_response){
+                    // alert(php_script_response); 
+
+                    var resText = php_script_response.split("\n");
+
+                    // A-R graph
+                	titleText = "Recommended Aspect Ratios";
+                	xArray = Array(), yArray = Array();
+                	for (var i = 0; i < 5; i++) {
+                		xArray[i] = "x" + String(resText[6].split(", ")[i]);
+                		yArray[i] = Number(resText[7].split(", ")[i]);
+                	}
+                	console.log(xArray);
+                	console.log(yArray);
+                	qual = ["Most common", "", "", "", ""];
+                	var colorArray = ['rgba(0, 153, 204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)'];
+
+                	for (var i = 0; i < 5; i++) {
+                		if (isNaN(yArray[i])) {
+                			xArray.splice(0, i);
+                			yArray.splice(0, i);
+                			qual.splice(0, i);
+                			colorArray.splice(0, i);
+                			break;
+                		}
+                	}
+
+                	makeGraph(titleText, xArray, yArray, qual, colorArray, "responseDiv2");
+
+                	// Page template
+                	var pgTemplate = document.createElement('div');
+                    pgTemplate.className = "template";
+                    var arDiv = document.createElement('div');
+                    arDiv.className = "arTemplate";
+                    arDiv.innerHTML = "<font size=2 color='white'>AD SAMPLE</font>";
+                    arNum = Number(xArray[0].slice(1));
+                    console.log(arNum);
+                    if (arNum < 2) {
+                    	arDiv.style.height = "40%";
+                    	arDiv.style.width = String(arNum * Number(arDiv.style.height.slice(0, 2))) + "%";
+                    }
+                    else {
+                    	arDiv.style.width = "70%";
+                    	arDiv.style.height = String(Number(arDiv.style.height.slice(0, 2)) / arNum) + "%";
+                    }
+                    pgTemplate.appendChild(arDiv);
+                    responseDiv1.innerHTML = "<font size=6 color='#4fe1ff'>Page Template</font><br>";
+                    responseDiv1.appendChild(pgTemplate);
+
+                    // Label graph
+                	titleText = "Ad Label Scores";
+                	xArray = Array(), yArray = Array();
+                	for (var i = 0; i < 10; i++) {
+                		xArray[i] = String(resText[11].split(", ")[i]).slice(1);
+                		yArray[i] = Number(resText[12].split(", ")[i]);
+                	}
+                	colorArray = ['rgba(0, 153, 204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)', 'rgba(204,204,204,1)'];
+                	qual = ["Most common", "", "", "", "", "", "", "", "", ""];
+
+                	makeGraph(titleText, xArray, yArray, qual, colorArray, "responseDiv3");
+
+                	var iLArray = Array();
+                	var iLCount = Array();
+                	for (var i = 0; i < 10; i++) {
+                		iLArray[i] = resText[16].split(", ")[i].slice(1);
+                		iLCount[i] = Number(resText[17].split(", ")[i]);	
+                	}
+                	wordScores = iLCount;
+
+                	maxIL = Math.max.apply(Math, iLCount);
+                	minIL = Math.min.apply(Math, iLCount);
+                	wordCloud = "<font size=6 color='#4fe1ff'>Image Labels</font><br>";
+
+                	for (var i = 0; i < 10; i++) {
+                		iLCount[i] = Math.floor(parseFloat(5 - 1)/(maxIL - minIL) * (iLCount[i] - minIL) + 1);
+                		if (i % 2 == 0) {
+                			wCColor = "white";
+                		}
+                		else {
+                			wCColor = "#c6c6c6";
+                		}
+                		wordCloud += "<font title='" + String(wordScores[i]) + "' size='" + String(iLCount[i]*5) + "' color='" + wCColor + "'>" + iLArray[i] + "</font>";
+                	}
+                	responseDiv4.innerHTML = wordCloud;
+
+                }
+		     });
+		}
+	</script>
+</body>
+</html>
